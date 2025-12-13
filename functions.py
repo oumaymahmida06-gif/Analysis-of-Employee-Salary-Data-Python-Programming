@@ -27,6 +27,7 @@ def extract_two_columns():
 def clean_dataset():
     df = pd.read_csv("Data.csv")
     df = df.fillna(0)
+    df['BasePay'] = df['BasePay'].replace(['not provided', 'Not Provided', 'NOT PROVIDED'], 0)
     df.drop_duplicates(inplace=True)
     df.to_csv("cleaned_data.csv")
     print("Dataset cleaned and saved as cleaned_data.csv")
@@ -67,3 +68,73 @@ def summary_statistics():
     print("Average BasePay:", average_basepay)
     print("\nTop 5 most common job titles:")
     print(top_titles)
+
+# ------------------------------------------------------
+#      PART VII - Interactive Investigation Script
+# ------------------------------------------------------
+import pandas as pd 
+df = pd.read_csv("data - data.csv")
+
+def filter_by_JobTitle():
+    while True:
+        keyword=input("enter the job title to search for : ")
+        if keyword.lower()!="not provided" :
+            break
+    filtered_df=df[df['JobTitle'].str.contains(keyword, case=False,na=False)]
+    if filtered_df.empty:
+        print("No Job Title corresponds to your entry.")
+    else :
+        print(filtered_df)
+
+def number_of_matches_by_JobTitle(keyword):
+    filtered_df=df[df['JobTitle'].str.contains(keyword, case=False,na=False)]
+    return len(filtered_df)
+
+def average_BasePay(keyword):
+    df_cleaned = pd.read_csv("cleaned_data.csv")
+    filtered_df=df_cleaned[df_cleaned['JobTitle'].str.contains(keyword, case=False,na=False)]
+
+    avg_basepay =filtered_df['BasePay'].mean()
+    return avg_basepay
+
+
+def highest_total_pay(keyword):
+    df_cleaned = pd.read_csv("cleaned_data.csv")
+    filtered_df=df_cleaned[df_cleaned['JobTitle'].str.contains(keyword, case=False,na=False)]
+    Max_totalPay=filtered_df['TotalPay'].max()
+    return Max_totalPay
+
+
+def save_changes(keyword): 
+    with open("custom_search.csv",'a') as f :
+        df = pd.read_csv("data - data.csv")
+        f.write(f"The number of matches by job title : {number_of_matches_by_JobTitle(keyword)}\n")
+        f.write(f"The average base pay : {average_BasePay(keyword)}\n")
+        f.write(f"The highest total pay : {highest_total_pay(keyword)}\n")
+
+def Interactive_Investigation():
+    print("   ===Interactive Investigation Script===   ")
+    print("1. Filter job title using keywords.")
+    print("2. Show the number of matches.")
+    print("3. Show the average base pay.")
+    print("4. Show the highest total pay.")
+    print("5. Save.")
+    print("6. Exit.")
+    keyword=input("enter keyword for job title :")
+    test=False
+    while test==False:
+        choice=str(input("Enter your choice : "))
+        test = (choice=='1'or choice=='2' or choice=='3' or choice=='4' or choice=='5' or choice=='0')
+    if choice=='1':
+        filter_by_JobTitle(keyword)
+    elif choice =='2' : 
+        print(number_of_matches_by_JobTitle(keyword))
+    elif choice=='3': 
+        print(average_BasePay(keyword))
+    elif choice=='4':
+        print(highest_total_pay(keyword))
+    elif choice=='5':
+        save_changes()
+    elif choice=='0':
+        return 0
+    
