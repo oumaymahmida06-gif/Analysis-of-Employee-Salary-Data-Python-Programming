@@ -1,7 +1,4 @@
-# main.py
-
 from functions import *
-
 def show_menu():
     print("\n====== EMPLOYEE DATA ANALYSIS ======")
     print("1. Preview dataset")
@@ -13,8 +10,6 @@ def show_menu():
     print("7. Police job titles")
     print("8. Create Is_Manager column")
     print("9. Show summary statistics")
-    print("10. Average pay per year")
-    print("11. Interactive investigation")
     print("0. Exit")
 
 
@@ -30,7 +25,25 @@ while True:
 
     elif choice == "3":
         extract_two_columns()
-        
+
+    elif choice == "4":
+        clean_dataset()
+
+    elif choice == "5":
+        high_earners()
+
+    elif choice == "6":
+        employees_2013()
+
+    elif choice == "7":
+        police_jobs()
+
+    elif choice == "8":
+        create_is_manager_column()
+
+    elif choice == "9":
+        summary_statistics()
+
     elif choice == "0":
         print("Exiting program...")
         break
