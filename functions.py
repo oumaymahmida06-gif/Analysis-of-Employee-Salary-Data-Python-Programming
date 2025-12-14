@@ -286,4 +286,6 @@ def Interactive_Investigation():
         save_changes()
     elif choice=='0':
         return 0
+    else : 
+        print("Invalid choice. Try again.")
 
