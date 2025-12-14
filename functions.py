@@ -137,4 +137,38 @@ def Interactive_Investigation():
         save_changes()
     elif choice=='0':
         return 0
+# -------------------------
+# PART IV - 7
+# -------------------------
+
+def show_summary_statistics():
+    with open('data.csv', 'r') as f:
+        data = pd.read_csv(f)  
+
+    data['BasePay'] = pd.to_numeric(data['BasePay'], errors='coerce')
+
+    average_basepay = data['BasePay'].mean()
+
+    top_5_titles = data['JobTitle'].value_counts().head(5)
+
+    total_employees = data['EmployeeName'].nunique() 
+
+    print("-------------------Average BasePay:-------------------")
+    print("                   ",average_basepay)
+    print("-------------------Top 5 most common Job Titles:-------------------")
+    print(top_5_titles)
+    print("-------------------Total number of employees:-------------------")
+    print("                           ",total_employees)
+
+# -------------------------
+# PART V - 8
+# -------------------------
+def average_pay_year():
+    with open('data.csv', 'r') as f:
+        data = pd.read_csv(f)
+
+    average_totalpay_per_year = data.groupby('Year')['TotalPay'].mean()
+
+    print(average_totalpay_per_year)
     
+
