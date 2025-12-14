@@ -1,6 +1,7 @@
 import pandas as pd
+# ------------------------------------------------------
 # PART 1 - File Handling
-
+# ------------------------------------------------------
 def preview_dataset():
     with open("Data.csv", "r") as f:
         for i in range(5):
@@ -8,66 +9,206 @@ def preview_dataset():
 
 def search_chief():
     with open("Data.csv", "r") as f:
+        line_number=0
+        found=False
         for line in f:
+            line_number+=1
             if "chief" in line.lower():
+                print("First occurrence found!")
+                print("Line number:", line_number)
+                print("Line content:")
                 print(line.strip())
+                found = True
+                break
+        if not found:
+            print("The word 'chief' was not found in the file.")
 
 def extract_two_columns():
-    column1 = int(input("Enter the index of the first column (starting from 0): "))
-    column2 = int(input("Enter the index of the second column (starting from 0): "))
-
     with open("Data.csv", "r") as f:
+        header = f.readline().strip().split(",")
+        print("\nAvailable columns:")
+        for i in range(len(header)):
+            print(i, "-", header[i])
+
+        valid=False
+        while not valid:
+            column1 = int(input("Enter the index of the first column (starting from 0): "))
+            column2 = int(input("Enter the index of the second column (starting from 0): "))
+            if column1 < 0 or column1 >= len(header) or column2 < 0 or column2 >= len(header):
+                print("Invalid column indices. Please try again.")
+            else:
+                valid=True
+        rows=int(input("Enter the number of rows to extract : "))        
+        print(f"\nExtracted columns: {header[column1]} | {header[column2]}")
+        row_count = 0
         for line in f:
             columns = line.strip().split(",")
 
             if len(columns) > column1 and len(columns) > column2:
                 print(columns[column1], "|", columns[column2])
+                row_count += 1
+            if row_count == int(rows):
+                break
 
+def File_Handling():
+    while True:
+        print("   === File Handling ===   ")
+        print("1. Preview first 5 rows of the dataset.")
+        print("2. Search for “chief” in the CSV.")
+        print("3. Extract manually 2 columns.")
+        print("0. Exit.")
+        choice = input("Enter your choice: ")
+        if choice=='1':
+            preview_dataset()
+        elif choice =='2' : 
+            search_chief()
+        elif choice=='3': 
+            extract_two_columns()
+        elif choice=='0':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Try again.")
+
+# ------------------------------------------------------
 # PART 2 - Data Cleaning
-def clean_dataset():
+# ------------------------------------------------------
+def Replace_Missing_Numeric_With_0():
     df = pd.read_csv("Data.csv")
     df = df.fillna(0)
-    df['BasePay'] = df['BasePay'].replace(['not provided', 'Not Provided', 'NOT PROVIDED'], 0)
-    df.drop_duplicates(inplace=True)
-    df.to_csv("cleaned_data.csv")
-    print("Dataset cleaned and saved as cleaned_data.csv")
+    df.to_csv("cleaned_data_without_missing_numeric.csv", index=False)
+    print("Dataset cleaned and saved as cleaned_data_without_missing_numeric.csv")
 
+def Remove_Duplicates():
+    df = pd.read_csv("Data.csv")
+    df.drop_duplicates(inplace=True)
+    df.to_csv("cleaned_data_without_duplicates.csv", index=False)
+    print("Duplicates removed and saved as cleaned_data_without_duplicates.csv")
+
+def Data_Cleaning():
+    while True:
+        print("   === Data Cleaning ===   ")
+        print("1. Remove Missing Numeric with 0.")
+        print("2. Remove duplicates.")
+        print("0. Exit.")
+        choice = input("Enter your choice: ")
+        if choice=='1':
+            Replace_Missing_Numeric_With_0()
+        elif choice =='2' : 
+            Remove_Duplicates()
+        elif choice=='0':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Try again.")
+
+# ------------------------------------------------------
 # PART 3 -Subsetting & Filtering
+# ------------------------------------------------------
+
 def high_earners():
     df = pd.read_csv("Data.csv")
+    df["BasePay"] = pd.to_numeric(df["BasePay"], errors='coerce')
     high = df[df["BasePay"] > 100000]
     print(high)
 
 def employees_2013():
     df = pd.read_csv("Data.csv")
+    df["Year"] = pd.to_numeric(df["Year"], errors='coerce')
     emp_2013 = df[df["Year"] == 2013]
     print(emp_2013)
 
 def police_jobs():
     df = pd.read_csv("Data.csv")
-    police = df[df["JobTitle"].str.contains("POLICE")]
+    df["JobTitle"] = df["JobTitle"].fillna("")
+    police = df[df["JobTitle"].str.contains("POLICE",case=False, na=False)]
     print(police)
 
+def Subsetting_And_Filtering():
+    while True:
+        print("   === Subsetting And Filtering ===   ")
+        print("1. Create a subset of High Earners (Base Pay > 100000).")
+        print("2. Create a subset of Employees from year 2013.")
+        print("3. Create a subset of JobTitles containing “POLICE”.")
+        print("0. Exit.")
+        choice = input("Enter your choice: ")
+        if choice=='1':
+            high_earners()
+        elif choice =='2' : 
+            employees_2013()
+        elif choice=='3':
+            police_jobs()
+        elif choice=='0':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Try again.")
+
+# ------------------------------------------------------
 # PART 4 - New Columns & Summary Statistics
+# ------------------------------------------------------
 
 def create_is_manager_column():
     df = pd.read_csv("Data.csv")
-    df["Is_Manager"] = df["JobTitle"].str.contains("MANAGER|CHIEF")
+    df["Is_Manager"] = df["JobTitle"].str.contains("MANAGER|CHIEF",case=False)
     df.to_csv("manager_data.csv", index=False)
     print("Column 'Is_Manager' created successfully and saved as manager_data.csv.")
 
-def summary_statistics():
-    df = pd.read_csv("Data.csv")
-    total_employees = len(df)
-    average_basepay = df["BasePay"].mean()
-    top_titles = df["JobTitle"].value_counts().head(5)
+def Create_Computed_Columns():
+    while True:
+        print("   === Create Computed Columns ===   ")
+        print("1.Create a computed column Is_Manager if the job title contains 'MANAGER' or 'CHIEF'.")
+        print("0. Exit.")
+        choice = input("Enter your choice: ")
+        if choice=='1':
+            create_is_manager_column()
+        elif choice=='0':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Try again.")
+    
+def Summary_Statistics():
+    data = pd.read_csv('Data.csv')
+    data['BasePay'] = pd.to_numeric(data['BasePay'], errors='coerce')
+
+    average_basepay = data['BasePay'].mean()
+    top_5_titles = data['JobTitle'].value_counts().head(5)
+    total_employees = data['EmployeeName'].nunique()
 
     print("SUMMARY STATISTICS")
     print("------------------")
     print("Total number of employees:", total_employees)
     print("Average BasePay:", average_basepay)
     print("\nTop 5 most common job titles:")
-    print(top_titles)
+    print(top_5_titles)
+
+# ------------------------------------------------------
+# PART 5 - Grouping & Aggregation
+# ------------------------------------------------------
+
+def average_pay_year():
+    with open('data.csv', 'r') as f:
+        data = pd.read_csv(f)
+
+    average_totalpay_per_year = data.groupby('Year')['TotalPay'].mean()
+
+    print(average_totalpay_per_year)
+
+def Grouping_And_Aggregation():
+    while True:
+        print("   === Analysis using group based aggregation ===   ")
+        print("1. Average TotalPay per Year.")
+        print("0. Exit.")
+        choice = input("Enter your choice: ")
+        if choice=='1':
+            average_pay_year()
+        elif choice=='0':
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Try again.")
+
 
 # ------------------------------------------------------
 #      PART VII - Interactive Investigation Script
@@ -137,38 +278,3 @@ def Interactive_Investigation():
         save_changes()
     elif choice=='0':
         return 0
-# -------------------------
-# PART IV - 7
-# -------------------------
-
-def show_summary_statistics():
-    with open('data.csv', 'r') as f:
-        data = pd.read_csv(f)  
-
-    data['BasePay'] = pd.to_numeric(data['BasePay'], errors='coerce')
-
-    average_basepay = data['BasePay'].mean()
-
-    top_5_titles = data['JobTitle'].value_counts().head(5)
-
-    total_employees = data['EmployeeName'].nunique() 
-
-    print("-------------------Average BasePay:-------------------")
-    print("                   ",average_basepay)
-    print("-------------------Top 5 most common Job Titles:-------------------")
-    print(top_5_titles)
-    print("-------------------Total number of employees:-------------------")
-    print("                           ",total_employees)
-
-# -------------------------
-# PART V - 8
-# -------------------------
-def average_pay_year():
-    with open('data.csv', 'r') as f:
-        data = pd.read_csv(f)
-
-    average_totalpay_per_year = data.groupby('Year')['TotalPay'].mean()
-
-    print(average_totalpay_per_year)
-    
-
