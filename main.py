@@ -1,57 +1,39 @@
-from functions import *
+from functions import*
 def show_menu():
     print("\n====== EMPLOYEE DATA ANALYSIS ======")
-    print("1. Preview dataset")
-    print("2. Search for 'chief'")
-    print("3. Extract 2 columns")
-    print("4. Clean dataset (Pandas)")
-    print("5. High earners")
-    print("6. Employees from 2013")
-    print("7. Police job titles")
-    print("8. Create Is_Manager column")
-    print("9. Show summary statistics")
-    print("10. Average pay per year")
+    print("1. File Handling")
+    print("2. Data Cleaning")
+    print("3. Subsetting And Filtering")
+    print("4. Create Computed Columns")
+    print("5. Summary Statistics")
+    print("6. Grouping & Aggregation")
     print("0. Exit")
-
 
 while True:
     show_menu()
     choice = input("Enter your choice: ")
 
     if choice == "1":
-        preview_dataset()
+        File_Handling()
 
     elif choice == "2":
-        search_chief()
+        Data_Cleaning()
 
     elif choice == "3":
-        extract_two_columns()
+        Subsetting_And_Filtering()
 
     elif choice == "4":
-        clean_dataset()
+        Create_Computed_Columns()
 
     elif choice == "5":
-        high_earners()
-
+        Summary_Statistics()
+    
     elif choice == "6":
-        employees_2013()
+        Grouping_And_Aggregation()
 
-    elif choice == "7":
-        police_jobs()
-
-    elif choice == "8":
-        create_is_manager_column()
-
-    elif choice == "9":
-        show_summary_statistics()
-        
-    elif choice=="10":
-        average_pay_year()
-        
     elif choice == "0":
         print("Exiting program...")
         break
 
     else:
         print("Invalid choice. Try again.")
-
