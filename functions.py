@@ -209,12 +209,20 @@ def Grouping_And_Aggregation():
         else:
             print("Invalid choice. Try again.")
 
+# ------------------------------------------------------
+#                PART VI - Joining
+# ------------------------------------------------------
+
+def joining():
+    df = pd.read_csv("data - data.csv",low_memory=False)
+    agency_df =pd.read_csv("agency_codes.csv")
+    merged_df = pd.merge(df, agency_df, on="Agency", how="left")
+    merged_df.to_csv("merged_data.csv", index=False)
 
 # ------------------------------------------------------
 #      PART VII - Interactive Investigation Script
 # ------------------------------------------------------
-import pandas as pd 
-df = pd.read_csv("data - data.csv")
+
 
 def filter_by_JobTitle():
     while True:
@@ -278,3 +286,4 @@ def Interactive_Investigation():
         save_changes()
     elif choice=='0':
         return 0
+
