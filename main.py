@@ -10,6 +10,7 @@ def show_menu():
     print("7. Police job titles")
     print("8. Create Is_Manager column")
     print("9. Show summary statistics")
+    print("10. Average pay per year")
     print("0. Exit")
 
 
@@ -42,11 +43,15 @@ while True:
         create_is_manager_column()
 
     elif choice == "9":
-        summary_statistics()
-
+        show_summary_statistics()
+        
+    elif choice=="10":
+        average_pay_year()
+        
     elif choice == "0":
         print("Exiting program...")
         break
 
     else:
         print("Invalid choice. Try again.")
+
