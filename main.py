@@ -7,6 +7,8 @@ def show_menu():
     print("4. Create Computed Columns")
     print("5. Summary Statistics")
     print("6. Grouping & Aggregation")
+    print("7. Joining")
+    print("8. Interactive Investigation Script")
     print("0. Exit")
 
 while True:
@@ -30,6 +32,12 @@ while True:
     
     elif choice == "6":
         Grouping_And_Aggregation()
+        
+    elif choice=="7":
+        joining()
+
+    elif choice=="8":
+        Interactive_Investigation()
 
     elif choice == "0":
         print("Exiting program...")
@@ -37,3 +45,4 @@ while True:
 
     else:
         print("Invalid choice. Try again.")
+
