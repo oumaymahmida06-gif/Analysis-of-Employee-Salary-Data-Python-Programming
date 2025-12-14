@@ -1,3 +1,4 @@
+
 import pandas as pd
 # ------------------------------------------------------
 # PART 1 - File Handling
@@ -188,7 +189,7 @@ def Summary_Statistics():
 # ------------------------------------------------------
 
 def average_pay_year():
-    with open('data.csv', 'r') as f:
+    with open('Data.csv', 'r') as f:
         data = pd.read_csv(f)
 
     average_totalpay_per_year = data.groupby('Year')['TotalPay'].mean()
@@ -212,12 +213,14 @@ def Grouping_And_Aggregation():
 # ------------------------------------------------------
 #                PART VI - Joining
 # ------------------------------------------------------
+df = pd.read_csv("Data.csv",low_memory=False)
 
 def joining():
-    df = pd.read_csv("data - data.csv",low_memory=False)
     agency_df =pd.read_csv("agency_codes.csv")
     merged_df = pd.merge(df, agency_df, on="Agency", how="left")
     merged_df.to_csv("merged_data.csv", index=False)
+    print("Joining completed, Please check 'merged_data.csv'. ")
+
 
 # ------------------------------------------------------
 #      PART VII - Interactive Investigation Script
@@ -256,36 +259,41 @@ def highest_total_pay(keyword):
 
 def save_changes(keyword): 
     with open("custom_search.csv",'a') as f :
-        df = pd.read_csv("data - data.csv")
+        df = pd.read_csv("Data.csv")
+        f.write(f"The job title keyword is {keyword}\n")
         f.write(f"The number of matches by job title : {number_of_matches_by_JobTitle(keyword)}\n")
         f.write(f"The average base pay : {average_BasePay(keyword)}\n")
         f.write(f"The highest total pay : {highest_total_pay(keyword)}\n")
+    print("This filter has been saved succesfully in'customer_search.csv'.  ")
 
 def Interactive_Investigation():
-    print("   ===Interactive Investigation Script===   ")
-    print("1. Filter job title using keywords.")
-    print("2. Show the number of matches.")
-    print("3. Show the average base pay.")
-    print("4. Show the highest total pay.")
-    print("5. Save.")
-    print("6. Exit.")
-    keyword=input("enter keyword for job title :")
-    test=False
-    while test==False:
-        choice=str(input("Enter your choice : "))
-        test = (choice=='1'or choice=='2' or choice=='3' or choice=='4' or choice=='5' or choice=='0')
-    if choice=='1':
-        filter_by_JobTitle(keyword)
-    elif choice =='2' : 
-        print(number_of_matches_by_JobTitle(keyword))
-    elif choice=='3': 
-        print(average_BasePay(keyword))
-    elif choice=='4':
-        print(highest_total_pay(keyword))
-    elif choice=='5':
-        save_changes()
-    elif choice=='0':
-        return 0
-    else : 
-        print("Invalid choice. Try again.")
-
+    test1=True
+    while test1 :
+        print("   ===Interactive Investigation Script===   ")
+        print("1. Filter job title using keywords.")
+        print("2. Show the number of matches.")
+        print("3. Show the average base pay.")
+        print("4. Show the highest total pay.")
+        print("5. Save.")
+        print("0. Exit.")
+        keyword=input("enter keyword for job title :")
+        test=False
+        while test==False:
+            choice=str(input("Enter your choice : "))
+            test = (choice=='1'or choice=='2' or choice=='3' or choice=='4' or choice=='5' or choice=='0')
+        
+        if choice=='1':
+            filter_by_JobTitle(keyword)
+        elif choice =='2' : 
+            print(number_of_matches_by_JobTitle(keyword))
+        elif choice=='3': 
+            print(average_BasePay(keyword))
+        elif choice=='4':
+            print(highest_total_pay(keyword))
+        elif choice=='5':
+            save_changes(keyword)
+        elif choice=='0':
+            return 0
+        else : 
+            print("Invalid choice. Try again.")
+        test1= choice!='0'
