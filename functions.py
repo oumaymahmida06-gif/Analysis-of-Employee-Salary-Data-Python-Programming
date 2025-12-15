@@ -27,6 +27,7 @@ def search_chief():
 def extract_two_columns():
     with open("Data.csv", "r") as f:
         header = f.readline().strip().split(",")
+
         print("\nAvailable columns:")
         for i in range(len(header)):
             print(i, "-", header[i])
@@ -39,7 +40,9 @@ def extract_two_columns():
                 print("Invalid column indices. Please try again.")
             else:
                 valid=True
-        rows=int(input("Enter the number of rows to extract : "))        
+
+        rows=int(input("Enter the number of rows to extract : "))   
+
         print(f"\nExtracted columns: {header[column1]} | {header[column2]}")
         row_count = 0
         for line in f:
@@ -151,7 +154,7 @@ def Subsetting_And_Filtering():
 
 def create_is_manager_column():
     df = pd.read_csv("Data.csv")
-    df["Is_Manager"] = df["JobTitle"].str.contains("MANAGER|CHIEF",case=False)
+    df["Is_Manager"] = df["JobTitle"].str.contains("MANAGER|CHIEF",case=False,na=False)
     df.to_csv("manager_data.csv", index=False)
     print("Column 'Is_Manager' created successfully and saved as manager_data.csv.")
 
@@ -189,11 +192,8 @@ def Summary_Statistics():
 # ------------------------------------------------------
 
 def average_pay_year():
-    with open('Data.csv', 'r') as f:
-        data = pd.read_csv(f)
-
+    data = pd.read_csv("Data.csv")
     average_totalpay_per_year = data.groupby('Year')['TotalPay'].mean()
-
     print(average_totalpay_per_year)
 
 def Grouping_And_Aggregation():
@@ -211,11 +211,11 @@ def Grouping_And_Aggregation():
             print("Invalid choice. Try again.")
 
 # ------------------------------------------------------
-#                PART VI - Joining
+#                PART 6 - Joining
 # ------------------------------------------------------
-df = pd.read_csv("Data.csv",low_memory=False)
 
 def joining():
+    df = pd.read_csv("Data.csv",low_memory=False)
     agency_df =pd.read_csv("agency_codes.csv")
     merged_df = pd.merge(df, agency_df, on="Agency", how="left")
     merged_df.to_csv("merged_data.csv", index=False)
@@ -223,15 +223,12 @@ def joining():
 
 
 # ------------------------------------------------------
-#      PART VII - Interactive Investigation Script
+#         PART 7 - Interactive Investigation Script
 # ------------------------------------------------------
 
 
-def filter_by_JobTitle():
-    while True:
-        keyword=input("enter the job title to search for : ")
-        if keyword.lower()!="not provided" :
-            break
+def filter_by_JobTitle(keyword):
+    df = pd.read_csv("Data.csv",low_memory=False)
     filtered_df=df[df['JobTitle'].str.contains(keyword, case=False,na=False)]
     if filtered_df.empty:
         print("No Job Title corresponds to your entry.")
@@ -239,19 +236,21 @@ def filter_by_JobTitle():
         print(filtered_df)
 
 def number_of_matches_by_JobTitle(keyword):
-    filtered_df=df[df['JobTitle'].str.contains(keyword, case=False,na=False)]
+    df_cleaned = pd.read_csv("cleaned_data_without_missing_numeric.csv")
+    filtered_df=df_cleaned[df_cleaned['JobTitle'].str.contains(keyword, case=False,na=False)]
     return len(filtered_df)
 
 def average_BasePay(keyword):
-    df_cleaned = pd.read_csv("cleaned_data.csv")
+    df_cleaned = pd.read_csv("cleaned_data_without_missing_numeric.csv")
+    df_cleaned['BasePay'] = pd.to_numeric(df_cleaned['BasePay'],errors='coerce')
     filtered_df=df_cleaned[df_cleaned['JobTitle'].str.contains(keyword, case=False,na=False)]
-
     avg_basepay =filtered_df['BasePay'].mean()
     return avg_basepay
 
 
 def highest_total_pay(keyword):
-    df_cleaned = pd.read_csv("cleaned_data.csv")
+    df_cleaned = pd.read_csv("cleaned_data_without_missing_numeric.csv")
+    df_cleaned['TotalPay'] = pd.to_numeric(df_cleaned['TotalPay'],errors='coerce')
     filtered_df=df_cleaned[df_cleaned['JobTitle'].str.contains(keyword, case=False,na=False)]
     Max_totalPay=filtered_df['TotalPay'].max()
     return Max_totalPay
@@ -264,10 +263,11 @@ def save_changes(keyword):
         f.write(f"The number of matches by job title : {number_of_matches_by_JobTitle(keyword)}\n")
         f.write(f"The average base pay : {average_BasePay(keyword)}\n")
         f.write(f"The highest total pay : {highest_total_pay(keyword)}\n")
-    print("This filter has been saved succesfully in'customer_search.csv'.  ")
+    print("This filter has been saved succesfully in 'custom_search.csv' .  ")
 
 def Interactive_Investigation():
     test1=True
+    keyword=input("enter keyword for job title :")
     while test1 :
         print("   ===Interactive Investigation Script===   ")
         print("1. Filter job title using keywords.")
@@ -275,23 +275,26 @@ def Interactive_Investigation():
         print("3. Show the average base pay.")
         print("4. Show the highest total pay.")
         print("5. Save.")
+        print("6. Change keyword")
         print("0. Exit.")
-        keyword=input("enter keyword for job title :")
         test=False
         while test==False:
             choice=str(input("Enter your choice : "))
-            test = (choice=='1'or choice=='2' or choice=='3' or choice=='4' or choice=='5' or choice=='0')
+            test = (choice=='1'or choice=='2' or choice=='3' or choice=='4' or choice=='5' or choice =='6' or choice=='0')
         
         if choice=='1':
             filter_by_JobTitle(keyword)
         elif choice =='2' : 
-            print(number_of_matches_by_JobTitle(keyword))
+            print("Number of matches:", number_of_matches_by_JobTitle(keyword))
         elif choice=='3': 
-            print(average_BasePay(keyword))
+            print("Average BasePay:", average_BasePay(keyword))
         elif choice=='4':
-            print(highest_total_pay(keyword))
+            print("Highest TotalPay:", highest_total_pay(keyword))
         elif choice=='5':
             save_changes(keyword)
+        elif choice == '6':
+            keyword = input("Enter new keyword: ")
+            print("Keyword updated.")
         elif choice=='0':
             return 0
         else : 
